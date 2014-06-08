@@ -1052,7 +1052,7 @@ var $$ = {};
       if (t1 != null)
         t1.clear$0(0);
       for (t1 = this.ports, t2 = t1.get$values(t1), t3 = t2._iterable, t2 = H.setRuntimeTypeInfo(new H.MappedIterator(null, t3.get$iterator(t3), t2._f), [H.getTypeArgumentByIndex(t2, 0), H.getTypeArgumentByIndex(t2, 1)]); t2.moveNext$0();)
-        t2._current._close$0();
+        t2.__internal$_current._close$0();
       if (t1._collection$_length > 0) {
         t1._last = null;
         t1._first = null;
@@ -1076,7 +1076,7 @@ var $$ = {};
       t1 = this.doneHandlers;
       if (t1 != null) {
         for (t1 = new H.ListIterator(t1, t1.length, 0, null); t1.moveNext$0();)
-          t1._current.send$1(null);
+          t1.__internal$_current.send$1(null);
         this.doneHandlers = null;
       }
     }, "call$0", "get$kill", 0, 0, 2]
@@ -3046,7 +3046,7 @@ var $$ = {};
   IterableMixinWorkaround_forEach: function(iterable, f) {
     var t1;
     for (t1 = new H.ListIterator(iterable, iterable.length, 0, null); t1.moveNext$0();)
-      f.call$1(t1._current);
+      f.call$1(t1.__internal$_current);
   },
   IterableMixinWorkaround_toStringIterable: function(iterable, leftDelimiter, rightDelimiter) {
     var result, i, t1, t2;
@@ -3105,23 +3105,23 @@ var $$ = {};
     return symbol.get$_name();
   },
   ListIterator: {
-    "^": "Object;_iterable,_length,_index,_current",
+    "^": "Object;_iterable,__internal$_length,_index,__internal$_current",
     get$current: function() {
-      return this._current;
+      return this.__internal$_current;
     },
     moveNext$0: function() {
       var t1, t2, $length, t3;
       t1 = this._iterable;
       t2 = J.getInterceptor$asx(t1);
       $length = t2.get$length(t1);
-      if (this._length !== $length)
+      if (this.__internal$_length !== $length)
         throw H.wrapException(P.ConcurrentModificationError$(t1));
       t3 = this._index;
       if (t3 >= $length) {
-        this._current = null;
+        this.__internal$_current = null;
         return false;
       }
-      this._current = t2.elementAt$1(t1, t3);
+      this.__internal$_current = t2.elementAt$1(t1, t3);
       ++this._index;
       return true;
     }
@@ -3153,21 +3153,21 @@ var $$ = {};
     "^": "MappedIterable;_iterable,_f"
   },
   MappedIterator: {
-    "^": "Iterator;_current,_iterator,_f",
+    "^": "Iterator;__internal$_current,_iterator,_f",
     _f$1: function(arg0) {
       return this._f.call$1(arg0);
     },
     moveNext$0: function() {
       var t1 = this._iterator;
       if (t1.moveNext$0()) {
-        this._current = this._f$1(t1.get$current());
+        this.__internal$_current = this._f$1(t1.get$current());
         return true;
       }
-      this._current = null;
+      this.__internal$_current = null;
       return false;
     },
     get$current: function() {
-      return this._current;
+      return this.__internal$_current;
     }
   },
   FixedLengthListMixin: {
@@ -5948,22 +5948,22 @@ var $$ = {};
     $asList: null
   },
   FixedSizeListIterator: {
-    "^": "Object;_array,_html$_length,_position,_html$_current",
+    "^": "Object;_array,_length,_position,_current",
     moveNext$0: function() {
       var nextPosition, t1;
       nextPosition = this._position + 1;
-      t1 = this._html$_length;
+      t1 = this._length;
       if (nextPosition < t1) {
-        this._html$_current = J.$index$asx(this._array, nextPosition);
+        this._current = J.$index$asx(this._array, nextPosition);
         this._position = nextPosition;
         return true;
       }
-      this._html$_current = null;
+      this._current = null;
       this._position = t1;
       return false;
     },
     get$current: function() {
-      return this._html$_current;
+      return this._current;
     }
   }
 }],
@@ -6331,7 +6331,19 @@ var $$ = {};
 ["wordgen", "wordgen.dart", , R, {
   "^": "",
   generate: function(base) {
-    var row, row0, col, cell;
+    var t1, t2, row, row0, col, cell;
+    t1 = document.documentElement.clientWidth;
+    if (typeof t1 !== "number")
+      return t1.$tdiv();
+    t1 = C.JSInt_methods._tdivFast$1(t1, 9);
+    t2 = $.maxLetters;
+    if (typeof t2 !== "number")
+      return H.iae(t2);
+    $.cols = C.JSInt_methods.$tdiv(t1, t2);
+    t2 = document.documentElement.clientHeight;
+    if (typeof t2 !== "number")
+      return t2.$sub();
+    $.rows = C.JSInt_methods._tdivFast$1(t2 - 52, 26);
     $.table.textContent = "";
     for (row = 0; row < $.rows; ++row) {
       row0 = document.createElement("tr", null);
@@ -6363,6 +6375,7 @@ var $$ = {};
     H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new R.init_closure0(minField, maxField)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
     t1 = J.get$onChange$x(maxField);
     H.setRuntimeTypeInfo(new W._EventStreamSubscription(0, t1._target, t1._eventType, W._wrapZone(new R.init_closure1(minField, maxField)), t1._useCapture), [H.getTypeArgumentByIndex(t1, 0)])._tryResume$0();
+    R.generate(base);
   },
   init_closure: {
     "^": "Closure:9;base_0",
@@ -6388,10 +6401,6 @@ var $$ = {};
       t1 = P.min($.minLetters, t1);
       $.minLetters = t1;
       J.set$value$x(this.minField_3, C.JSNumber_methods.toString$0(t1));
-      t1 = $.maxLetters;
-      if (typeof t1 !== "number")
-        return H.iae(t1);
-      $.cols = C.JSInt_methods.$tdiv(120, t1);
     }
   }
 }],
@@ -6400,9 +6409,9 @@ Isolate.$finishClasses($$, $, null);
 $$ = null;
 
 // Runtime type support
+W.Node.$isObject = true;
 P.$int.$is$int = true;
 P.$int.$isObject = true;
-W.Node.$isObject = true;
 P.num.$isObject = true;
 P.String.$isString = true;
 P.String.$isObject = true;
@@ -6410,9 +6419,9 @@ P.Duration.$isObject = true;
 P.List.$isObject = true;
 P.Map.$isObject = true;
 W.Event.$isObject = true;
-W.MouseEvent.$isObject = true;
 P.bool.$isbool = true;
 P.bool.$isObject = true;
+W.MouseEvent.$isObject = true;
 H.RawReceivePortImpl.$isObject = true;
 H._IsolateEvent.$isObject = true;
 H._IsolateContext.$isObject = true;
